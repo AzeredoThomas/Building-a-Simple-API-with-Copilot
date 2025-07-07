@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using UserManagementApi; // Add this using directive for Swagger support
+using UserManagement; 
 
 internal class Program
 {
@@ -32,6 +32,8 @@ internal class Program
         app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         app.UseMiddleware<TokenAuthenticationMiddleware>();
+
+        app.UseHttpsRedirection();
 
 
         app.MapPost("/users", (User user) =>
@@ -151,14 +153,15 @@ internal class Program
             }
         });
 
+
         app.UseMiddleware<RequestResponseLoggingMiddleware>();
-
-
-        //app.UseAuthorization();
 
         app.MapControllers();
 
         app.Run();
+
+
+        // Sanitize input to prevent malicious code
         static string SanitizeInput(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -173,7 +176,7 @@ internal class Program
     }
 }
 
-//app.UseHttpsRedirection();
+   
 
 // Create User
 // Move the SanitizeInput method into a separate static class to resolve CS8803 and ensure it is used to resolve CS8321.
