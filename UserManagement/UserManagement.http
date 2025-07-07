@@ -1,6 +1,70 @@
-@UserManagement_HostAddress = http://localhost:5065
+@token = SuperSecretToken123
 
-GET {{UserManagement_HostAddress}}/weatherforecast/
-Accept: application/json
+### Create a new user (valid)
+POST https://localhost:7175/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
-###
+{
+  "username": "alice",
+  "email": "alice@example.com"
+}
+
+### Create a new user (missing username)
+POST https://localhost:7175/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "email": "bob@example.com"
+}
+
+### Create a new user (invalid email)
+POST https://localhost:7175/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "username": "bob",
+  "email": "not-an-email"
+}
+
+### Get all users
+GET https://localhost:7175/users
+Authorization: Bearer {{token}}
+
+### Get user by ID (replace 1 with actual user ID)
+GET https://localhost:7175/users/1
+Authorization: Bearer {{token}}
+
+### Update user (replace 1 with actual user ID)
+PUT https://localhost:7175/users/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "username": "alice_updated",
+  "email": "alice_new@example.com"
+}
+
+### Update user with duplicate email (should fail if email exists)
+PUT https://localhost:7175/users/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "username": "alice_updated",
+  "email": "bob@example.com"
+}
+
+### Delete user (replace 1 with actual user ID)
+DELETE https://localhost:7175/users/1
+Authorization: Bearer {{token}}
+
+### Get user by non-existent ID (should return 404)
+GET https://localhost:7175/users/9999
+Authorization: Bearer {{token}}
+
+### Delete user by non-existent ID (should return 404)
+DELETE https://localhost:7175/users/9999
+Authorization: Bearer {{token}}

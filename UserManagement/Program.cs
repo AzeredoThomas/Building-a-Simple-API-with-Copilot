@@ -50,8 +50,8 @@ internal class Program
                 }
 
                 // Sanitize input to prevent malicious code (basic example)
-                user.Username = SanitizeInput(user.Username);
-                user.Email = SanitizeInput(user.Email);
+                user.Username = InputSanitizer.SanitizeInput(user.Username);
+                user.Email = InputSanitizer.SanitizeInput(user.Email);
 
                 // Check for unique email
                 if (users.Any(u => u.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase)))
@@ -118,8 +118,8 @@ internal class Program
                 }
 
                 // Sanitize input to prevent malicious code
-                updatedUser.Username = SanitizeInput(updatedUser.Username);
-                updatedUser.Email = SanitizeInput(updatedUser.Email);
+                updatedUser.Username = InputSanitizer.SanitizeInput(updatedUser.Username);
+                updatedUser.Email = InputSanitizer.SanitizeInput(updatedUser.Email);
 
                 // Check for unique email (excluding current user)
                 if (users.Any(u => u.Id != id && u.Email.Equals(updatedUser.Email, StringComparison.OrdinalIgnoreCase)))
@@ -159,27 +159,12 @@ internal class Program
         app.MapControllers();
 
         app.Run();
-
-
-        // Sanitize input to prevent malicious code
-        static string SanitizeInput(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-                return string.Empty;
-
-            // Remove script tags
-            var sanitized = Regex.Replace(input, "<.*?>", string.Empty);
-            // Remove potentially dangerous characters
-            sanitized = Regex.Replace(sanitized, @"[<>""'/]", string.Empty);
-            return sanitized.Trim();
-        }
     }
 }
 
    
 
-// Create User
-// Move the SanitizeInput method into a separate static class to resolve CS8803 and ensure it is used to resolve CS8321.
+
 
 public static class InputSanitizer
 {
